@@ -21,12 +21,11 @@ app.get("/api", (req, res) => {
 });
 
 // 2. SERVIR ARCHIVOS ESTÁTICOS DEL FRONTEND
-// Asegúrate de que la ruta suba los niveles necesarios hasta encontrar la carpeta 'build'
 const frontendPath = path.join(__dirname, "../../frontend/build");
 app.use(express.static(frontendPath));
 
 // 3. EL "COMODÍN" PARA REACT ROUTER (IMPORTANTE)
-// Cualquier ruta que no sea de API, sirve el index.html de React
+
 app.get("*", (req, res) => {
   res.sendFile(path.join(frontendPath, "index.html"));
 });

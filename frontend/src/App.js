@@ -6,6 +6,7 @@ import Register from "./pages/Register.jsx";
 import Dashboard from "./pages/Dashboard.jsx";
 import Services from "./pages/Services.jsx";
 import Booking from "./pages/Booking.jsx";
+import Appointments from "./pages/Appointments.jsx";
 
 function App() {
   return (
@@ -21,7 +22,7 @@ function App() {
         <Route element={<DashboardLayout />}>
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/services" element={<Services />} />
-          {/* Aquí añadirás /appointments más adelante */}
+          <Route path="/appointments" element={<Appointments />} />
         </Route>
 
         <Route path="/booking/:userId" element={<Booking />} />
