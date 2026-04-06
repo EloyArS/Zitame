@@ -20,11 +20,8 @@ app.get("/api", (req, res) => {
   res.json({ mensaje: "API de Zitame funcionando" });
 });
 
-// 2. SERVIR ARCHIVOS ESTÁTICOS DEL FRONTEND
 const frontendPath = path.join(__dirname, "../../frontend/build");
 app.use(express.static(frontendPath));
-
-// 3. EL "COMODÍN" PARA REACT ROUTER (IMPORTANTE)
 
 app.get("*", (req, res) => {
   res.sendFile(path.join(frontendPath, "index.html"));

@@ -1,13 +1,10 @@
+const { getAppointmentsByUserId } = require("../models/appointmentQueries");
 const {
-  createAppointment,
-  getAppointmentsByUserId,
-  updateAppointmentStatus,
-  getAppointmentById,
-} = require("../models/appointmentQueries");
-const {
-  createCustomer,
-  getCustomerByPhone,
-} = require("../models/customerQueries");
+  createAppointmentService,
+  updateAppointmentStatusHandlerService,
+} = require("../services/appointmentService.js");
+
+//No tiene logica en Services
 
 const getAppointments = async (req, res) => {
   try {
@@ -18,40 +15,38 @@ const getAppointments = async (req, res) => {
   }
 };
 
+//Es solo cntrolador, la lógica se realiza en Services
+
 const createAppointmentHandler = async (req, res) => {
   const { name, phone, email, date_time, serviceId, userId } = req.body;
   try {
-    let customer = await getCustomerByPhone(phone);
-    if (!customer) {
-      customer = await createCustomer(name, phone, email);
-    }
-    const appointment = await createAppointment(
+    const appointment = await createAppointmentService({
+      name,
+      phone,
+      email,
       date_time,
-      userId,
-      customer.id,
       serviceId,
-    );
+      userId,
+    });
     res.status(201).json({ mensaje: "Cita creada correctamente", appointment });
   } catch (error) {
-    console.error(error);
     res.status(500).json({ error: "Error al crear la cita" });
   }
 };
+
+//Es solo controlador, la lógica se realiza en Services.
 
 const updateAppointmentStatusHandler = async (req, res) => {
   const { id } = req.params;
   const { status } = req.body;
   try {
-    if (!["pending", "approved", "rejected"].includes(status)) {
-      return res.status(400).json({ error: "Estado no válido" });
-    }
-    const appointment = await updateAppointmentStatus(id, status);
-    if (!appointment) {
-      return res.status(404).json({ error: "Cita no encontrada" });
-    }
-    res.json({
+    const updatedAppointment = await updateAppointmentStatusHandlerService({
+      id,
+      status,
+    });
+    res.status(200).json({
       mensaje: "Estado de la cita actualizado correctamente",
-      appointment,
+      updatedAppointment,
     });
   } catch (error) {
     res.status(500).json({ error: "Error al actualizar el estado de la cita" });

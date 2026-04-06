@@ -1,5 +1,5 @@
 import React from "react";
-
+//Usado en Booking, Login, Dashboard y Services para los campos de formulario.
 const InputField = ({
   label,
   type,
