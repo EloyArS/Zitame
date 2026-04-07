@@ -1,14 +1,14 @@
-const { getAppointmentsByUserId } = require("../models/appointmentQueries");
 const {
   createAppointmentService,
   updateAppointmentStatusHandlerService,
+  getAppointmentsService,
 } = require("../services/appointmentService.js");
 
-//No tiene logica en Services
+//Es solo cntrolador, la lógica se realiza en Services
 
 const getAppointments = async (req, res) => {
   try {
-    const appointments = await getAppointmentsByUserId(req.userId);
+    const appointments = await getAppointmentsService(req.userId);
     res.json(appointments);
   } catch (error) {
     res.status(500).json({ error: "Error al obtener las citas" });

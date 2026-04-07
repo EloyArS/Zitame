@@ -2,7 +2,32 @@ const {
   createService,
   updateService,
   deleteService,
+  getServicesByUserId,
 } = require("../models/serviceQueries");
+
+//lógica
+
+const logicgetServiceHandler = async (id) => {
+  try {
+    const service = await getServicesByUserId(id);
+    return service;
+  } catch (error) {
+    throw error;
+  }
+};
+
+//lógica
+
+const logicServiceByUserHandler = async (userId) => {
+  try {
+    const services = await getServicesByUserId(userId);
+    return services;
+  } catch (error) {
+    throw error;
+  }
+};
+
+//Logica
 
 const logicServiceHandler = async (
   name,
@@ -25,6 +50,8 @@ const logicServiceHandler = async (
   }
 };
 
+//Logica
+
 const updatelogicServiceHandler = async (
   id,
   name,
@@ -40,6 +67,8 @@ const updatelogicServiceHandler = async (
   }
 };
 
+//Logica
+
 const deleteLogicServiceHandler = async (id) => {
   try {
     await deleteService(id);
@@ -49,6 +78,8 @@ const deleteLogicServiceHandler = async (id) => {
 };
 
 module.exports = {
+  logicgetServiceHandler,
+  logicServiceByUserHandler,
   logicServiceHandler,
   updatelogicServiceHandler,
   deleteLogicServiceHandler,

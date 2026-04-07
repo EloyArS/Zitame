@@ -2,26 +2,27 @@ const {
   logicServiceHandler,
   updatelogicServiceHandler,
   deleteLogicServiceHandler,
+  logicServiceByUserHandler,
+  logicgetServiceHandler,
 } = require("../services/servicesService");
-const { getServicesByUserId } = require("../models/serviceQueries");
 
-//Controlador y lógica
+//CSolo controlador
 
 const getServices = async (req, res) => {
   try {
-    const services = await getServicesByUserId(req.userId);
+    const services = await logicgetServiceHandler(req.userId);
     res.json(services);
   } catch (error) {
     res.status(500).json({ error: "Error al obtener los servicios" });
   }
 };
 
-//controlador y lógica
+//Solo controlador
 
 const getServicesByUser = async (req, res) => {
   const { userId } = req.params;
   try {
-    const services = await getServicesByUserId(userId);
+    const services = await logicServiceByUserHandler(userId);
     res.json(services);
   } catch (error) {
     res.status(500).json({ error: "Error al obtener los servicios" });
