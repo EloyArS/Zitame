@@ -27,7 +27,6 @@ function Login() {
         setError(data.error || "Credenciales incorrectas");
         return;
       }
-
       // Guardamos el token y entramos al panel
       localStorage.setItem("token", data.token);
       navigate("/dashboard");

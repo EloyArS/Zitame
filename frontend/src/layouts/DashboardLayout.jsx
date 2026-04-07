@@ -37,11 +37,18 @@ const DashboardLayout = () => {
           >
             Mis Servicios
           </Link>
+
           <Link
             to="/appointments"
             className="block p-3 rounded-lg hover:bg-blue-50 text-gray-700 font-medium transition-colors"
           >
             Citas Recibidas
+          </Link>
+          <Link
+            to="/sharebooking"
+            className="block p-3 rounded-lg hover:bg-blue-50 text-gray-700 font-medium transition-colors"
+          >
+            Enlace para clientes
           </Link>
         </nav>
         <div className="p-4 border-t">
@@ -68,7 +75,7 @@ const DashboardLayout = () => {
           </div>
         </header>
 
-        {/* El "Hueco" para las páginas internas */}
+        {/* Outlet es el espacio para las páginas internas */}
         <main className="flex-1 overflow-x-hidden overflow-y-auto p-6">
           <Outlet />
         </main>
