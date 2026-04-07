@@ -1,11 +1,23 @@
 const {
   createAppointment,
   updateAppointmentStatus,
+  getAppointmentsByUserId,
 } = require("../models/appointmentQueries");
 const {
   getCustomerByPhone,
   createCustomer,
 } = require("../models/customerQueries");
+
+//Listar cita con lógica
+
+const getAppointmentsService = async (userId) => {
+  try {
+    const appointments = await getAppointmentsByUserId(userId);
+    return appointments;
+  } catch (error) {
+    throw error;
+  }
+};
 
 //Creación de cita con lógica
 
@@ -50,4 +62,5 @@ const updateAppointmentStatusHandlerService = async ({ id, status }) => {
 module.exports = {
   createAppointmentService,
   updateAppointmentStatusHandlerService,
+  getAppointmentsService,
 };
