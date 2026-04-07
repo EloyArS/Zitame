@@ -5,7 +5,7 @@ const {
 const {
   getCustomerByPhone,
   createCustomer,
-} = require("./models/customerQueries");
+} = require("../models/customerQueries");
 
 //Creación de cita con lógica
 
@@ -49,5 +49,5 @@ const updateAppointmentStatusHandlerService = async ({ id, status }) => {
 
 module.exports = {
   createAppointmentService,
-  updateAppointmentStatusHandlerServices,
+  updateAppointmentStatusHandlerService,
 };

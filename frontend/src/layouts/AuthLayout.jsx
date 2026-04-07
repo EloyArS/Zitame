@@ -9,8 +9,8 @@ const AuthLayout = () => {
         <div className="max-w-md">
           <h1 className="text-5xl font-extrabold mb-6">Zitame</h1>
           <p className="text-xl text-blue-100">
-            La plataforma inteligente para gestionar tus citas y hacer crecer tu
-            negocio sin esfuerzo.
+            Gestiona tus citas desde un único panel, acepta, rechaza y modifica
+            con un solo click.
           </p>
           <div className="mt-8 space-y-4">
             <div className="flex items-center gap-3">
@@ -20,6 +20,10 @@ const AuthLayout = () => {
             <div className="flex items-center gap-3">
               <span className="bg-blue-500 p-2 rounded-full">✓</span>
               <span>Panel de control en tiempo real</span>
+            </div>
+            <div className="flex items-center gap-3">
+              <span className="bg-blue-500 p-2 rounded-full">✓</span>
+              <span>Controla y actualiza tu calendario</span>
             </div>
           </div>
         </div>

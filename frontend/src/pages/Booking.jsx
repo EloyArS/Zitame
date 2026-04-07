@@ -33,7 +33,7 @@ function Booking() {
     };
     fetchServices();
   }, [userId]);
-
+  //Grabamos la cita
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError("");
@@ -48,7 +48,7 @@ function Booking() {
           email,
           date_time: dateTime,
           serviceId: selectedService,
-          userId, // El ID del negocio
+          userId,
         }),
       });
 

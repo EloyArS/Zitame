@@ -1,5 +1,7 @@
-const { logicUserCreateHandler, logicUserLoginHandler } = require("../services/servicesUser");
-const { getUserByEmail } = require("../models/userQueries");
+const {
+  logicUserCreateHandler,
+  logicUserLoginHandler,
+} = require("../services/servicesUser");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 

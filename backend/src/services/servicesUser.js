@@ -1,4 +1,5 @@
-const { createUser } = require("../models/userQueries");
+const { createUser, getUserByEmail } = require("../models/userQueries");
+const bcrypt = require("bcrypt");
 
 const logicUserCreateHandler = async (name, email, password) => {
   try {
