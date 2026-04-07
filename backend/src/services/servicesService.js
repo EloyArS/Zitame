@@ -1,15 +1,16 @@
 const {
+  getServicesById,
+  getServicesByUserId,
   createService,
   updateService,
   deleteService,
-  getServicesByUserId,
 } = require("../models/serviceQueries");
 
 //lógica
 
 const logicgetServiceHandler = async (id) => {
   try {
-    const service = await getServicesByUserId(id);
+    const service = await getServicesById(id);
     return service;
   } catch (error) {
     throw error;
