@@ -1,111 +1,15 @@
-import { useState, useEffect } from "react";
+import AppointmentsComponent from "../components/TargetAppointments.jsx";
 
-function Appointments() {
-  const [appointments, setAppointments] = useState([]);
-  const [error, setError] = useState("");
-
-  useEffect(() => {
-    const fetchAppointments = async () => {
-      try {
-        const token = localStorage.getItem("token");
-        const response = await fetch("/api/appointments", {
-          headers: { Authorization: `Bearer ${token}` },
-        });
-        const data = await response.json();
-        if (!response.ok) {
-          setError(data.error);
-          return;
-        }
-        setAppointments(data);
-      } catch (error) {
-        setError("Error al conectar con el servidor");
-      }
-    };
-    fetchAppointments();
-  }, []);
-
-  const handleStatus = async (id, status) => {
-    try {
-      const token = localStorage.getItem("token");
-      const response = await fetch(`/api/appointments/${id}/status`, {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify({ status }),
-      });
-      const data = await response.json();
-      if (!response.ok) {
-        setError(data.error);
-        return;
-      }
-      setAppointments(
-        appointments.map((a) => (a.id === id ? { ...a, status } : a)),
-      );
-    } catch (error) {
-      setError("Error al actualizar la cita");
-    }
-  };
-
+function AppointmentsPage() {
   return (
-    <div>
-      <h2 className="text-2xl font-bold mb-6">Citas recibidas</h2>
-      {error && <p className="text-red-500 mb-4">{error}</p>}
-      {appointments.length === 0 ? (
-        <p className="text-center text-gray-500">No hay citas pendientes</p>
-      ) : (
-        <div className="space-y-4">
-          {appointments.map((appointment) => (
-            <div
-              key={appointment.id}
-              className="bg-white p-6 rounded-lg shadow-md"
-            >
-              <div className="flex justify-between items-center">
-                <div>
-                  <p className="font-bold">{appointment.customer_name}</p>
-                  <p className="text-gray-600">{appointment.phone}</p>
-                  <p className="text-gray-600">{appointment.service_name}</p>
-                  <p className="text-gray-600">
-                    {new Date(appointment.date_time).toLocaleString()}
-                  </p>
-                </div>
-                <div className="flex flex-col gap-2">
-                  <span
-                    className={`text-center px-3 py-1 rounded text-sm ${
-                      appointment.status === "approved"
-                        ? "bg-green-100 text-green-800"
-                        : appointment.status === "rejected"
-                          ? "bg-red-100 text-red-800"
-                          : "bg-yellow-100 text-yellow-800"
-                    }`}
-                  >
-                    {appointment.status}
-                  </span>
-                  {appointment.status === "pending" && (
-                    <div className="flex gap-2">
-                      <button
-                        onClick={() => handleStatus(appointment.id, "approved")}
-                        className="bg-green-500 text-white px-3 py-1 rounded hover:bg-green-600 text-sm"
-                      >
-                        Aprobar
-                      </button>
-                      <button
-                        onClick={() => handleStatus(appointment.id, "rejected")}
-                        className="bg-red-500 text-white px-3 py-1 rounded hover:bg-red-600 text-sm"
-                      >
-                        Rechazar
-                      </button>
-                    </div>
-                  )}
-                </div>
-              </div>
-            </div>
-          ))}
-        </div>
-      )}
+    <div className="p-8">
+      <h1 className="text-3xl font-bold mb-6">Panel de Control</h1>
+
+      <section className="mt-8">
+        <AppointmentsComponent />
+      </section>
     </div>
   );
 }
 
-export default Appointments;
+export default AppointmentsPage;
