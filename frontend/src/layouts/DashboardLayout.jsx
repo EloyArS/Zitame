@@ -1,10 +1,11 @@
 import { Outlet, Link, useNavigate } from "react-router-dom";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 
 const DashboardLayout = () => {
   const navigate = useNavigate();
+  // Constante para controlar el menu del movil
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
-  // Protección de ruta: Si no hay token, fuera al login
   useEffect(() => {
     const token = localStorage.getItem("token");
     if (!token) {
@@ -17,40 +18,63 @@ const DashboardLayout = () => {
     navigate("/login");
   };
 
+  // Cerramos menú al hacer click en un enlace.
+  const closeMenu = () => setIsMobileMenuOpen(false);
+
   return (
     <div className="flex h-screen bg-gray-100">
       {/* Sidebar - Menú Lateral */}
-      <aside className="w-64 bg-white shadow-md hidden md:flex flex-col">
-        <div className="p-6">
+      <aside
+        className={`fixed inset-y-0 left-0 z-50 w-64 bg-white shadow-md transform transition-transform duration-300 md:relative md:translate-x-0 ${
+          isMobileMenuOpen ? "translate-x-0" : "-translate-x-full"
+        } flex flex-col`}
+      >
+        <div className="p-6 flex justify-between items-center">
           <h2 className="text-2xl font-bold text-blue-600">Zitame</h2>
+          {/* Botón para cerrar en móvil */}
+          <button
+            className="md:hidden text-gray-500"
+            onClick={() => setIsMobileMenuOpen(false)}
+          >
+            <svg
+              className="w-6 h-6"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth="2"
+                d="M6 18L18 6M6 6l12 12"
+              />
+            </svg>
+          </button>
         </div>
-        <nav className="flex-1 px-4 space-y-2">
-          <Link
-            to="/dashboard"
-            className="block p-3 rounded-lg hover:bg-blue-50 text-gray-700 font-medium transition-colors"
-          >
-            Panel Principal
-          </Link>
-          <Link
-            to="/services"
-            className="block p-3 rounded-lg hover:bg-blue-50 text-gray-700 font-medium transition-colors"
-          >
-            Mis Servicios
-          </Link>
 
-          <Link
-            to="/appointments"
-            className="block p-3 rounded-lg hover:bg-blue-50 text-gray-700 font-medium transition-colors"
-          >
-            Citas Recibidas
-          </Link>
-          <Link
-            to="/sharebooking"
-            className="block p-3 rounded-lg hover:bg-blue-50 text-gray-700 font-medium transition-colors"
-          >
-            Enlace para clientes
-          </Link>
+        <nav className="flex-1 px-4 space-y-2">
+          {["/dashboard", "/services", "/appointments", "/sharebooking"].map(
+            (path, idx) => {
+              const labels = [
+                "Panel Principal",
+                "Mis Servicios",
+                "Citas Recibidas",
+                "Enlace para clientes",
+              ];
+              return (
+                <Link
+                  key={path}
+                  to={path}
+                  onClick={closeMenu}
+                  className="block p-3 rounded-lg hover:bg-blue-50 text-gray-700 font-medium transition-colors"
+                >
+                  {labels[idx]}
+                </Link>
+              );
+            },
+          )}
         </nav>
+
         <div className="p-4 border-t">
           <button
             onClick={handleLogout}
@@ -61,21 +85,45 @@ const DashboardLayout = () => {
         </div>
       </aside>
 
+      {/* Cerramos el menú al tocar fuera (móvil) */}
+      {isMobileMenuOpen && (
+        <div
+          className="fixed inset-0 bg-black bg-opacity-50 z-40 md:hidden"
+          onClick={() => setIsMobileMenuOpen(false)}
+        ></div>
+      )}
+
       {/* Contenido Principal */}
       <div className="flex-1 flex flex-col overflow-hidden">
         {/* Navbar Superior */}
         <header className="bg-white shadow-sm p-4 flex justify-between items-center">
-          <h1 className="text-xl font-semibold text-gray-800 md:hidden">
-            Zitame
-          </h1>
-          <div className="ml-auto flex items-center gap-4">
-            <span className="text-sm text-gray-500 italic">
-              Panel de Control
-            </span>
+          {/* Botón Hamburguesa - Solo visible en móvil */}
+          <button
+            onClick={() => setIsMobileMenuOpen(true)}
+            className="text-gray-600 md:hidden"
+          >
+            <svg
+              className="w-6 h-6"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth="2"
+                d="M4 6h16M4 12h16M4 18h16"
+              />
+            </svg>
+          </button>
+
+          <h1 className="text-xl font-semibold text-gray-800">Zitame</h1>
+
+          <div className="ml-auto flex items-center gap-4 text-sm text-gray-500 italic">
+            Panel de Control
           </div>
         </header>
 
-        {/* Outlet es el espacio para las páginas internas */}
         <main className="flex-1 overflow-x-hidden overflow-y-auto p-6">
           <Outlet />
         </main>
