@@ -1,5 +1,5 @@
 const {
-  getServicesById,
+  getServiceById,
   getServicesByUserId,
   createService,
   updateService,
@@ -10,7 +10,7 @@ const {
 
 const logicgetServiceHandler = async (id) => {
   try {
-    const service = await getServicesById(id);
+    const service = await getServiceById(id);
     return service;
   } catch (error) {
     throw error;

@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { useNavigate, Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import InputField from "../components/InputField";
 
 function Services() {
@@ -11,6 +11,8 @@ function Services() {
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
   const navigate = useNavigate();
+
+  // Fetch de servicios al cargar la página
 
   useEffect(() => {
     const fetchServices = async () => {
@@ -24,6 +26,7 @@ function Services() {
           headers: { Authorization: `Bearer ${token}` },
         });
         const data = await response.json();
+        console.log("Servicios obtenidos:", data);
         if (!response.ok) throw new Error(data.error);
         setServices(data);
       } catch (err) {
@@ -32,6 +35,8 @@ function Services() {
     };
     fetchServices();
   }, [navigate]);
+
+  //Crear servicio
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -63,6 +68,8 @@ function Services() {
     }
   };
 
+  //Borrar servicio
+
   const handleDelete = async (id) => {
     if (!window.confirm("¿Estás seguro de eliminar este servicio?")) return;
     try {
@@ -82,12 +89,6 @@ function Services() {
       <div className="max-w-4xl mx-auto">
         <div className="flex justify-between items-center mb-8">
           <h1 className="text-3xl font-bold text-gray-800">Mis Servicios</h1>
-          <Link
-            to="/dashboard"
-            className="bg-gray-200 text-gray-700 px-4 py-2 rounded-lg hover:bg-gray-300 transition-colors font-medium"
-          >
-            ← Volver al panel
-          </Link>
         </div>
 
         {error && (
