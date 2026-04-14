@@ -2,22 +2,20 @@ const {
   createAppointment,
   updateAppointmentStatus,
   getAppointmentsByUserId,
-} = require("../models/appointmentQueries");
-const {
+  deleteAppointment,
   getCustomerByPhone,
   createCustomer,
-} = require("../models/customerQueries");
-
+} = require("../models/appointmentQueries");
 //Listar cita con lógica
 
-const getAppointmentsService = async (userId) => {
+async function getAppointmentsService(userId) {
   try {
     const appointments = await getAppointmentsByUserId(userId);
     return appointments;
   } catch (error) {
     throw error;
   }
-};
+}
 
 //Creación de cita con lógica
 
@@ -54,6 +52,14 @@ const updateAppointmentStatusHandlerService = async ({ id, status }) => {
       throw new Error("Estado no válido");
     }
     return await updateAppointmentStatus(id, status);
+  } catch (error) {
+    throw error;
+  }
+};
+
+const deleteAppointmentService = async (id) => {
+  try {
+    await deleteAppointment(id);
   } catch (error) {
     throw error;
   }

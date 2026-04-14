@@ -36,9 +36,18 @@ const getAppointmentById = async (id) => {
   return result.rows[0];
 };
 
+const deleteAppointment = async (id) => {
+  try {
+    await pool.query("DELETE FROM appointments WHERE id = $1", [id]);
+  } catch (error) {
+    throw error;
+  }
+};
+
 module.exports = {
   createAppointment,
   getAppointmentsByUserId,
   updateAppointmentStatus,
   getAppointmentById,
+  deleteAppointment,
 };
