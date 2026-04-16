@@ -2,6 +2,7 @@ const {
   createAppointmentService,
   updateAppointmentStatusHandlerService,
   getAppointmentsService,
+  deleteAppointmentService,
 } = require("../services/appointmentService.js");
 
 //Es solo cntrolador, la lógica se realiza en Services
@@ -53,8 +54,19 @@ const updateAppointmentStatusHandler = async (req, res) => {
   }
 };
 
+const deleteAppointmentHandler = async (req, res) => {
+  const { id } = req.params;
+  try {
+    await deleteAppointmentService(id);
+    res.status(200).json({ mensaje: "Cita eliminada correctamente" });
+  } catch (error) {
+    res.status(500).json({ error: "Error al eliminar la cita" });
+  }
+};
+
 module.exports = {
   getAppointments,
   createAppointmentHandler,
   updateAppointmentStatusHandler,
+  deleteAppointmentHandler,
 };
