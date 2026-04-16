@@ -3,9 +3,12 @@ const {
   updateAppointmentStatus,
   getAppointmentsByUserId,
   deleteAppointment,
-  getCustomerByPhone,
-  createCustomer,
 } = require("../models/appointmentQueries");
+const {
+  createCustomer,
+  getCustomerByPhone,
+} = require("../models/customerQueries");
+
 //Listar cita con lógica
 
 async function getAppointmentsService(userId) {
@@ -57,6 +60,8 @@ const updateAppointmentStatusHandlerService = async ({ id, status }) => {
   }
 };
 
+//Elimincar la cita con lógica.
+
 const deleteAppointmentService = async (id) => {
   try {
     await deleteAppointment(id);
@@ -69,4 +74,5 @@ module.exports = {
   createAppointmentService,
   updateAppointmentStatusHandlerService,
   getAppointmentsService,
+  deleteAppointmentService,
 };

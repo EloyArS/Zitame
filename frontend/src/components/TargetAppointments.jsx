@@ -49,6 +49,28 @@ function AppointmentsComponent() {
     }
   };
 
+  const handleDelete = async (id) => {
+    console.log("Intentando borrar la cita con ID:", id);
+    console.log("URL de la petición:", `/api/appointments/${id}`);
+    try {
+      const token = localStorage.getItem("token");
+      const response = await fetch(`/api/appointments/${id}`, {
+        method: "DELETE",
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      const data = await response.json();
+      if (!response.ok) {
+        setError(data.error || "No se pudo eliminar la cita");
+        return;
+      }
+      setAppointments(appointments.filter((a) => a.id !== id));
+    } catch (error) {
+      setError("Error al intentar conectar con el servidor");
+    }
+  };
+
   //Buscador para filtrar por nombre o teléfono.
 
   const filteredAppointments = appointments.filter(
@@ -136,14 +158,14 @@ function AppointmentsComponent() {
                       >
                         Rechazar
                       </button>
-                      <button
-                        onClick={() => handleStatus(appointment.id, "rejected")}
-                        className="bg-red-500 text-white px-3 py-1 rounded hover:bg-red-600 text-sm"
-                      >
-                        Eliminar
-                      </button>
                     </div>
                   )}
+                  <button
+                    onClick={() => handleDelete(appointment.id)}
+                    className="mt-1 text-red-500 hover:text-red-700 text-xs font-medium transition-colors"
+                  >
+                    Eliminar registro
+                  </button>
                 </div>
               </div>
             </div>
