@@ -13,7 +13,7 @@ function Calendar() {
     setViewDate(new Date());
   };
 
-  // --- LÓGICA DE CALENDARIO ---
+  // LÓGICA DE CALENDARIO
   const [viewDate, setViewDate] = useState(new Date());
   const getMonday = (d) => {
     const date = new Date(d);
@@ -152,9 +152,9 @@ function Calendar() {
                       <div
                         key={app.id}
                         className={`p-2 rounded-lg text-white shadow-sm transition-all hover:scale-[1.02] ${
-                          app.status === "approved"
+                          app.status === "Aprobado"
                             ? "bg-green-500"
-                            : app.status === "rejected"
+                            : app.status === "Rechazado"
                               ? "bg-red-500"
                               : "bg-yellow-500"
                         }`}
