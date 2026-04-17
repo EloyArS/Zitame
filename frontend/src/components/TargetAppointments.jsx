@@ -108,7 +108,7 @@ function AppointmentsComponent() {
                 <div>
                   <p className="font-bold">{appointment.customer_name}</p>
 
-                  {/* Añadimos la funcionalidad de whatsapp en el apartado del teléfono */}
+                  {/* Añadimos la funcionalidad de whatsap en el apartado del teléfono */}
                   <div className="flex items-center gap-2">
                     <p className="text-gray-600">{appointment.phone}</p>
                     <a
@@ -135,25 +135,27 @@ function AppointmentsComponent() {
                 <div className="flex flex-col gap-2">
                   <span
                     className={`text-center px-3 py-1 rounded text-sm ${
-                      appointment.status === "approved"
+                      appointment.status === "Aprobado"
                         ? "bg-green-100 text-green-800"
-                        : appointment.status === "rejected"
+                        : appointment.status === "Rechazado"
                           ? "bg-red-100 text-red-800"
                           : "bg-yellow-100 text-yellow-800"
                     }`}
                   >
                     {appointment.status}
                   </span>
-                  {appointment.status === "pending" && (
+                  {appointment.status === "Pendiente" && (
                     <div className="flex gap-2">
                       <button
-                        onClick={() => handleStatus(appointment.id, "approved")}
+                        onClick={() => handleStatus(appointment.id, "Aprobado")}
                         className="bg-green-500 text-white px-3 py-1 rounded hover:bg-green-600 text-sm"
                       >
                         Aprobar
                       </button>
                       <button
-                        onClick={() => handleStatus(appointment.id, "rejected")}
+                        onClick={() =>
+                          handleStatus(appointment.id, "Rechazado")
+                        }
                         className="bg-red-500 text-white px-3 py-1 rounded hover:bg-red-600 text-sm"
                       >
                         Rechazar

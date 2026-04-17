@@ -51,7 +51,7 @@ const createAppointmentService = async ({
 
 const updateAppointmentStatusHandlerService = async ({ id, status }) => {
   try {
-    if (!["pending", "approved", "rejected"].includes(status)) {
+    if (!["Pendiente", "Aprobado", "Rechazado"].includes(status)) {
       throw new Error("Estado no válido");
     }
     return await updateAppointmentStatus(id, status);

@@ -41,7 +41,6 @@ export default function ShareBooking() {
     setCargando(false);
   }, []);
 
-  // 3. Mientras procesa, no mostramos nada o un spinner
   if (cargando)
     return <div className="p-10 text-center text-gray-500">Cargando...</div>;
 
