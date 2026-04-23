@@ -3,9 +3,9 @@ import { Outlet } from "react-router-dom";
 
 const AuthLayout = () => {
   return (
-    <div className="min-h-screen flex flex-col md:flex-row bg-gray-50">
+    <div className="dashboard-layout">
       {/* Lado Izquierdo: Branding/Imagen (Solo visible en pantallas grandes) */}
-      <div className="hidden md:flex md:w-1/2 bg-blue-600 items-center justify-center p-12 text-white">
+      <div className="hidden md:flex md:w-1/2 bg-blue-900 items-center justify-center p-12 text-white">
         <div className="max-w-md">
           <h1 className="text-5xl font-extrabold mb-6">Zitame</h1>
           <p className="text-xl text-blue-100">
@@ -32,7 +32,7 @@ const AuthLayout = () => {
       {/* Lado Derecho: Formulario (Login / Register) */}
       <div className="flex-1 flex items-center justify-center p-8">
         <div className="w-full max-w-md">
-          {/* Aquí es donde "caerán" Login.jsx o Register.jsx */}
+          {/* Aquí cae Login.jsx o Register.jsx */}
           <Outlet />
 
           <footer className="mt-8 text-center text-sm text-gray-400">

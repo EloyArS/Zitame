@@ -52,33 +52,30 @@ const DashboardLayout = () => {
           </button>
         </div>
 
-        <nav className="flex-1 px-4 space-y-2">
-          {["/dashboard", "/services", "/appointments", "/sharebooking"].map(
-            (path, idx) => {
-              const labels = [
-                "Panel Principal",
-                "Mis Servicios",
-                "Citas Recibidas",
-                "Enlace para clientes",
-              ];
-              return (
-                <Link
-                  key={path}
-                  to={path}
-                  onClick={closeMenu}
-                  className="block p-3 rounded-lg hover:bg-blue-50 text-gray-700 font-medium transition-colors"
-                >
-                  {labels[idx]}
-                </Link>
-              );
-            },
-          )}
+        <nav className="dashboard-lesft-sidebar">
+          {["/dashboard", "/services", "/sharebooking"].map((path, idx) => {
+            const labels = [
+              "Panel Principal",
+              "Mis Servicios",
+              "Enlace para clientes",
+            ];
+            return (
+              <Link
+                key={path}
+                to={path}
+                onClick={closeMenu}
+                className="dashboard-lesft-sidebar-content"
+              >
+                {labels[idx]}
+              </Link>
+            );
+          })}
         </nav>
 
-        <div className="p-4 border-t">
+        <div className="p-8 border-t">
           <button
             onClick={handleLogout}
-            className="w-full text-left p-3 text-red-500 font-medium hover:bg-red-50 rounded-lg transition-colors"
+            className="button-eliminar-cerrarsesion"
           >
             Cerrar Sesión
           </button>
