@@ -28,6 +28,7 @@ const login = async (req, res) => {
     });
     res.json({ mensaje: "Login correcto", token });
   } catch (error) {
+    console.error("Error en login:", error.message);
     res.status(500).json({ error: "Error al iniciar sesión" });
   }
 };
