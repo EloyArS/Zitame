@@ -98,18 +98,15 @@ function AppointmentsComponent() {
       {appointments.length === 0 ? (
         <p className="text-center text-gray-500">No hay citas pendientes</p>
       ) : (
-        <div className="space-y-4">
+        <div className="appointments-bloques">
           {filteredAppointments.map((appointment) => (
-            <div
-              key={appointment.id}
-              className="bg-white p-6 rounded-lg shadow-md"
-            >
+            <div key={appointment.id} className="appointment-id">
               <div className="flex justify-between items-center">
                 <div>
                   <p className="font-bold">{appointment.customer_name}</p>
 
                   {/* Añadimos la funcionalidad de whatsap en el apartado del teléfono */}
-                  <div className="flex items-center gap-2">
+                  <div className="flex items-center gap-3">
                     <p className="text-gray-600">{appointment.phone}</p>
                     <a
                       href={`https://wa.me/${appointment.phone.replace(/\s+/g, "")}`}
@@ -148,7 +145,7 @@ function AppointmentsComponent() {
                     <div className="flex gap-2">
                       <button
                         onClick={() => handleStatus(appointment.id, "Aprobado")}
-                        className="bg-green-500 text-white px-3 py-1 rounded hover:bg-green-600 text-sm"
+                        className="button-aceptar"
                       >
                         Aprobar
                       </button>
@@ -156,7 +153,7 @@ function AppointmentsComponent() {
                         onClick={() =>
                           handleStatus(appointment.id, "Rechazado")
                         }
-                        className="bg-red-500 text-white px-3 py-1 rounded hover:bg-red-600 text-sm"
+                        className="button-rechazar"
                       >
                         Rechazar
                       </button>
@@ -164,7 +161,7 @@ function AppointmentsComponent() {
                   )}
                   <button
                     onClick={() => handleDelete(appointment.id)}
-                    className="mt-1 text-red-500 hover:text-red-700 text-xs font-medium transition-colors"
+                    className="button-eliminar-cerrarsesion"
                   >
                     Eliminar registro
                   </button>

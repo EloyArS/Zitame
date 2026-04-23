@@ -27,7 +27,6 @@ export default function ShareBooking() {
         );
 
         const decoded = JSON.parse(jsonPayload);
-        // Buscamos 'id' o 'userId' por si acaso
         return decoded.id || decoded.userId;
       } catch (error) {
         console.error("Error al leer el token:", error);
