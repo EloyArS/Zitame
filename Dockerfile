@@ -11,7 +11,7 @@ RUN cd frontend && npm install
 COPY . .
 
 RUN cd frontend && npm run build
-RUN cp -r frontend/dist backend/public
+RUN cp -r frontend/build backend/public
 
 WORKDIR /app/backend
 
