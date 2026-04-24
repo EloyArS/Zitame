@@ -14,15 +14,12 @@ function Login() {
     setError("");
 
     try {
-      const response = await fetch(
-        `${process.env.REACT_APP_API_URL}/api/users/login`,
-        {
-          // Ruta de LOGIN
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ email, password }), // Login no lleva 'name'
-        },
-      );
+      const response = await fetch("/api/users/login", {
+        // Ruta de LOGIN
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email, password }), // Login no lleva 'name'
+      });
 
       const data = await response.json();
 
