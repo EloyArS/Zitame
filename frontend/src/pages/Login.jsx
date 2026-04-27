@@ -19,17 +19,18 @@ function Login() {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email, password }), // Login no lleva 'name'
+        credentials: "include", // Para enviar cookies al backend
       });
+      console.log("Respuesta del servidor:", response.status); // Para debug
 
       const data = await response.json();
+      console.log("Datos recibidos:", data); // Para debug
 
       if (!response.ok) {
         setError(data.error || "Credenciales incorrectas");
         return;
       }
-      // Guardamos el token y entramos al panel
-      localStorage.setItem("token", data.token);
-      navigate("/dashboard");
+      navigate("/Dashboard");
     } catch (error) {
       console.error("Error en fetch:", error);
       setError("Error al conectar con el servidor");
