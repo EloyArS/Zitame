@@ -10,7 +10,7 @@ function Login() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log("Intentando iniciar sesión con:", email); // Para debug
+    console.log("Intentando iniciar sesión con:", email); // debug
     setError("");
 
     try {
@@ -18,13 +18,13 @@ function Login() {
         // Ruta de LOGIN
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email, password }), // Login no lleva 'name'
-        credentials: "include", // Para enviar cookies al backend
+        body: JSON.stringify({ email, password }),
+        credentials: "include", // Autoriza a enviar cookies al backend
       });
-      console.log("Respuesta del servidor:", response.status); // Para debug
+      console.log("Respuesta del servidor:", response.status); // debug
 
       const data = await response.json();
-      console.log("Datos recibidos:", data); // Para debug
+      console.log("Datos recibidos:", data); // debug
 
       if (!response.ok) {
         setError(data.error || "Credenciales incorrectas");

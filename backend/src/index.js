@@ -17,6 +17,8 @@ app.use(cookieParser());
 app.use("/api/users", userRoutes);
 app.use("/api/services", serviceRoutes);
 app.use("/api/appointments", appointmentRoutes);
+app.use("/api/users/verify", userRoutes);
+app.use("/api/users/logout", userRoutes);
 
 app.get("/api", (req, res) => {
   res.json({ mensaje: "API de Zitame funcionando" });
