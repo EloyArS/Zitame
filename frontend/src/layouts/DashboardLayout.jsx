@@ -7,15 +7,35 @@ const DashboardLayout = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   useEffect(() => {
-    const token = localStorage.getItem("token");
-    if (!token) {
-      navigate("/login");
-    }
+    const verifyUser = async () => {
+      const response = await fetch("/api/users/verify", {
+        method: "GET",
+        credentials: "include",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+      if (!response.ok) {
+        navigate("/login");
+      }
+    };
+    verifyUser();
   }, [navigate]);
 
   const handleLogout = () => {
-    localStorage.removeItem("token");
-    navigate("/login");
+    const killcookie = async () => {
+      const response = await fetch("/api/users/logout", {
+        method: "POST",
+        credentials: "include",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+      if (response.ok) {
+        navigate("/login");
+      }
+    };
+    killcookie();
   };
 
   // Cerramos menú al hacer click en un enlace.

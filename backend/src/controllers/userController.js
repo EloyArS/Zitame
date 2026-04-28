@@ -2,8 +2,6 @@ const {
   logicUserCreateHandler,
   logicUserLoginHandler,
 } = require("../services/servicesUser");
-const bcrypt = require("bcrypt");
-const jwt = require("jsonwebtoken");
 
 //Solo controlador
 
@@ -22,15 +20,38 @@ const register = async (req, res) => {
 const login = async (req, res) => {
   const { email, password } = req.body;
   try {
-    const user = await logicUserLoginHandler(email, password);
-    const token = jwt.sign({ id: user.id }, process.env.JWT_SECRET, {
-      expiresIn: "8h",
+    const { user, token } = await logicUserLoginHandler(email, password);
+    res.cookie("cookietoken", token, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "development" ? false : true,
+      sameSite: "strict",
     });
-    res.json({ mensaje: "Login correcto", token });
+    console.log("Token generado:", token);
+    res.json({ mensaje: "Login correcto", user });
   } catch (error) {
-    console.error("Error en login:", error.message);
-    res.status(500).json({ error: "Error al iniciar sesión" });
+    if (
+      error.message === "Usuario no encontrado" ||
+      error.message === "Contraseña incorrecta"
+    ) {
+      return res.status(401).json({ error: error.message });
+    } else {
+      console.error("Error en login:", error.message);
+      res.status(500).json({ error: "Error al iniciar sesión" });
+    }
   }
 };
 
-module.exports = { register, login };
+const verifyCookie = (req, res) => {
+  res.json({ mensaje: "Token válido", userId: req.userId });
+};
+
+const killcookie = (req, res) => {
+  res.clearCookie("cookietoken", {
+    httpOnly: true,
+    secure: process.env.NODE_ENV === "development" ? false : true,
+    sameSite: "strict",
+  });
+  res.json({ mensaje: "Logout exitoso" });
+};
+
+module.exports = { register, login, verifyCookie, killcookie };

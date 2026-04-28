@@ -1,5 +1,6 @@
 const { createUser, getUserByEmail } = require("../models/userQueries");
 const bcrypt = require("bcrypt");
+const jwt = require("jsonwebtoken");
 
 const logicUserCreateHandler = async (name, email, password) => {
   try {
@@ -25,8 +26,12 @@ const logicUserLoginHandler = async (email, password) => {
     if (!validPassword) {
       throw new Error("Contraseña incorrecta");
     }
-    return user;
+    const token = jwt.sign({ id: user.id }, process.env.JWT_SECRET, {
+      expiresIn: "8h",
+    });
+    return { user, token };
   } catch (error) {
+    console.log("Error aviso en lógica -login-", error.message);
     throw error;
   }
 };

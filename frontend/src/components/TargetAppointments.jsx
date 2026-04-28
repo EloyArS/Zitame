@@ -8,9 +8,10 @@ function AppointmentsComponent() {
   useEffect(() => {
     const fetchAppointments = async () => {
       try {
-        const token = localStorage.getItem("token");
         const response = await fetch("/api/appointments", {
-          headers: { Authorization: `Bearer ${token}` },
+          method: "GET",
+          credentials: "include",
+          headers: { "Content-Type": "application/json" },
         });
         const data = await response.json();
         if (!response.ok) {
@@ -27,12 +28,11 @@ function AppointmentsComponent() {
 
   const handleStatus = async (id, status) => {
     try {
-      const token = localStorage.getItem("token");
       const response = await fetch(`/api/appointments/${id}/status`, {
         method: "PUT",
+        credentials: "include",
         headers: {
           "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
         },
         body: JSON.stringify({ status }),
       });
@@ -53,11 +53,11 @@ function AppointmentsComponent() {
     console.log("Intentando borrar la cita con ID:", id);
     console.log("URL de la petición:", `/api/appointments/${id}`);
     try {
-      const token = localStorage.getItem("token");
       const response = await fetch(`/api/appointments/${id}`, {
         method: "DELETE",
+        credentials: "include",
         headers: {
-          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
         },
       });
       const data = await response.json();

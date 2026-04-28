@@ -5,16 +5,20 @@ const pool = require("./config/database");
 const userRoutes = require("./routes/userRoutes");
 const serviceRoutes = require("./routes/serviceRoutes");
 const appointmentRoutes = require("./routes/appointmentRoutes");
+const cookieParser = require("cookie-parser");
 
 const app = express();
 const PORT = process.env.PORT || 3000;
 
 app.use(express.json());
+app.use(cookieParser());
 
 // 1. RUTAS DE LA API
 app.use("/api/users", userRoutes);
 app.use("/api/services", serviceRoutes);
 app.use("/api/appointments", appointmentRoutes);
+app.use("/api/users/verify", userRoutes);
+app.use("/api/users/logout", userRoutes);
 
 app.get("/api", (req, res) => {
   res.json({ mensaje: "API de Zitame funcionando" });

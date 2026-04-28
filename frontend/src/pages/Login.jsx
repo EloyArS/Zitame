@@ -10,29 +10,27 @@ function Login() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log("Intentando iniciar sesión con:", email); // Para debug
+    console.log("Intentando iniciar sesión con:", email); // debug
     setError("");
 
     try {
-      const response = await fetch(
-        `${process.env.REACT_APP_API_URL}/api/users/login`,
-        {
-          // Ruta de LOGIN
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ email, password }), // Login no lleva 'name'
-        },
-      );
+      const response = await fetch("/api/users/login", {
+        // Ruta de LOGIN
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email, password }),
+        credentials: "include", // Autoriza a enviar cookies al backend
+      });
+      console.log("Respuesta del servidor:", response.status); // debug
 
       const data = await response.json();
+      console.log("Datos recibidos:", data); // debug
 
       if (!response.ok) {
         setError(data.error || "Credenciales incorrectas");
         return;
       }
-      // Guardamos el token y entramos al panel
-      localStorage.setItem("token", data.token);
-      navigate("/dashboard");
+      navigate("/Dashboard");
     } catch (error) {
       console.error("Error en fetch:", error);
       setError("Error al conectar con el servidor");
