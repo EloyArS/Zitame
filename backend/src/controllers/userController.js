@@ -1,6 +1,7 @@
 const {
   logicUserCreateHandler,
   logicUserLoginHandler,
+  logicGetUsernameHandler,
 } = require("../services/servicesUser");
 
 //Solo controlador
@@ -41,9 +42,12 @@ const login = async (req, res) => {
   }
 };
 
+//Solo controlador
 const verifyCookie = (req, res) => {
   res.json({ mensaje: "Token válido", userId: req.userId });
 };
+
+//Solo controlador
 
 const killcookie = (req, res) => {
   res.clearCookie("cookietoken", {
@@ -54,4 +58,19 @@ const killcookie = (req, res) => {
   res.json({ mensaje: "Logout exitoso" });
 };
 
-module.exports = { register, login, verifyCookie, killcookie };
+//Solo es controlador.
+const getUsername = async (req, res) => {
+  try {
+    const userId = req.userId;
+    const username = await logicGetUsernameHandler(userId);
+    if (!userId) {
+      return res.status(404).json({ error: "Usuario no encontrado" });
+    }
+    res.json(username);
+  } catch (error) {
+    console.error("Error al obtener el nombre de usuario:", error);
+    res.status(500).json({ error: "Error al obtener el nombre de usuario" });
+  }
+};
+
+module.exports = { register, login, verifyCookie, killcookie, getUsername };

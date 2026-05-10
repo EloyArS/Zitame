@@ -11,10 +11,13 @@ function Booking() {
   const [name, setName] = useState("");
   const [phone, setPhone] = useState("");
   const [email, setEmail] = useState("");
-  const [dateTime, setDateTime] = useState("");
+  const [date_time] = useState("");
   const [error, setError] = useState("");
   const [success, setSuccess] = useState(false);
   const [loading, setLoading] = useState(true);
+  const [selectedDate, setSelectedDate] = useState("");
+  const [selectedHour, setSelectedHour] = useState("");
+  const [occupiedAppointments, setOccupiedAppointments] = useState([]);
 
   // Cargar servicios del negocio (público)
   useEffect(() => {
@@ -33,11 +36,98 @@ function Booking() {
     };
     fetchServices();
   }, [userId]);
-  //Grabamos la cita
+
+  //recogemos en una funcion los días y horas ocupados
+  useEffect(() => {
+    const fetchOccupiedAppointments = async () => {
+      try {
+        const response = await fetch(`/api/appointments/`);
+        const data = await response.json();
+        //guardamos solo las fechas
+        const occupied = data.map((cita) =>
+          //de la bd traemos la fecha con un T entre la fecha y la hora, debemos quitarla para hacer correctamente la comparacion.
+          cita.date_time.replace("T", " ").slice(0, 19),
+        );
+        setOccupiedAppointments(occupied);
+      } catch (error) {
+        console.error("Error al cargar las citas ocupadas:", error);
+      }
+    };
+    fetchOccupiedAppointments();
+  }, []);
+
+  //DIAS
+  //obtenemos el día actual y los próximos 14 días, excluyendo fines de semana.
+  const showdays = (diasMostrados) => {
+    //array con los días disponibles
+    const avaliabledays = [];
+    //a partir del dia actual, guardamos en el array los días disponibles sin que sea sábdao o domingo
+    const hoy = new Date();
+    while (avaliabledays.length < diasMostrados) {
+      const diaSemana = hoy.getDay();
+      if (diaSemana !== 0 && diaSemana !== 6) {
+        //nos quedamos con el valor del día que nos devuelve el getDay
+        const value = hoy.toISOString().slice(0, 10);
+        //convertimos el día a un formato legible para el usuario
+        const label = hoy.toLocaleDateString("es-ES", {
+          weekday: "long",
+          day: "numeric",
+          month: "long",
+        });
+        avaliabledays.push({ value, label });
+      }
+      hoy.setDate(hoy.getDate() + 1);
+    }
+    return avaliabledays;
+  };
+  //diasamostror será el valor mapeado en el return.
+  const diasamostrar = showdays(14);
+  console.log(diasamostrar);
+
+  //HORAS
+  //Obtenermos las horas con las limitaciones en el horarrio, teniendo en cuentas las ocupadas.
+  const showhours = (
+    selectedDate,
+    occupiedAppointments = [],
+    start = "08:00",
+    end = "19:00",
+    step = 30,
+  ) => {
+    //si no hay fecha selccionada no tiene por qué cargar aun.
+    if (!selectedDate) return [];
+    const hours = [];
+    const [startHour] = start.split(":").map(Number);
+    const [endHour] = end.split(":").map(Number);
+    let tiempoactual = new Date();
+    tiempoactual.setHours(startHour, 0, 0);
+    let tiempofinal = new Date();
+    tiempofinal.setHours(endHour, 0, 0);
+    //con un while recorremos el tiempo actual hasta el tiempo final saltando la franja de 13:00 a 16:00
+    while (tiempoactual <= tiempofinal) {
+      const hora = tiempoactual.getHours();
+      const minuto = tiempoactual.getMinutes();
+      //cambiamos el formato de la hora
+      const horaTexto = `${hora.toString().padStart(2, "0")}:${minuto.toString().padStart(2, "0")}`;
+      const referenciaCita = `${selectedDate} ${horaTexto}:00`;
+      //booleano con el que comprobamos si la hora está ocupada dentro de "occupiedAppointments" comparando con referenciaCita
+      const citaOcupada = occupiedAppointments.includes(referenciaCita);
+      console.log(`Hora: ${horaTexto}, Ocupada: ${citaOcupada}`);
+      //si la hora es menor a 13 o mayor o igual a 16 y no está ocupada, la añadimos al array de horas disponibles.
+      if ((hora < 13 || hora >= 16) && !citaOcupada) {
+        hours.push(horaTexto);
+      }
+      tiempoactual.setMinutes(tiempoactual.getMinutes() + step);
+    }
+    return hours;
+  };
+  //horasDisponibles será el valor mapeado en el return.
+  const horasDisponibles = showhours(selectedDate, occupiedAppointments);
+  console.log(horasDisponibles);
+
+  //GRABAMOS LA CITA
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError("");
-
     try {
       const response = await fetch("/api/appointments", {
         method: "POST",
@@ -46,12 +136,12 @@ function Booking() {
           name,
           phone,
           email,
-          date_time: dateTime,
+          date_time: `${selectedDate} ${selectedHour}:00`,
           serviceId: selectedService,
           userId,
         }),
       });
-
+      console.log(date_time);
       const data = await response.json();
       if (!response.ok)
         throw new Error(data.error || "Error al solicitar la cita");
@@ -99,7 +189,7 @@ function Booking() {
           <div className="bg-white p-6 rounded-xl shadow-lg border border-gray-200">
             <form onSubmit={handleSubmit}>
               {/* Selector de Servicio */}
-              <div className="mb-4">
+              <div className="mb-4 space-y-6">
                 <label className="block text-gray-700 text-sm font-bold mb-2">
                   Selecciona un servicio
                 </label>
@@ -109,23 +199,50 @@ function Booking() {
                   className="w-full border border-gray-300 rounded px-3 py-2 bg-white focus:ring-2 focus:ring-blue-500 outline-none"
                   required
                 >
-                  <option value="">-- Elige un servicio --</option>
+                  <option value="">Elige un servicio</option>
                   {services.map((s) => (
                     <option key={s.id} value={s.id}>
                       {s.name} ({s.duration} min) - {s.price}€
                     </option>
                   ))}
                 </select>
+                {/* Selector de fecha */}
+                <label className="block text-gray-700 text-sm font-bold mb-2">
+                  Selecciona una fecha
+                </label>
+                <select
+                  required={true}
+                  value={selectedDate}
+                  onChange={(e) => setSelectedDate(e.target.value)}
+                  className="w-full border border-gray-300 rounded px-3 py-2 bg-white focus:ring-2 focus:ring-blue-500 outline-none"
+                >
+                  <option value="">Elige una fecha</option>
+                  {diasamostrar.map((dia) => (
+                    <option key={dia.value} value={dia.value}>
+                      {dia.label}
+                    </option>
+                  ))}
+                </select>
+                {/* Selector de hora */}
+                <label className="block text-gray-700 text-sm font-bold mb-2">
+                  Selecciona una hora
+                </label>
+                <select
+                  required={true}
+                  value={selectedHour}
+                  onChange={(e) => setSelectedHour(e.target.value)}
+                  className="w-full border border-gray-300 rounded px-3 py-2 bg-white focus:ring-2 focus:ring-blue-500 outline-none"
+                >
+                  <option value="">Elige una hora</option>
+                  {horasDisponibles.map((hora) => (
+                    <option key={hora} value={hora}>
+                      {hora}
+                    </option>
+                  ))}
+                </select>
               </div>
 
               {/*InputField Reutilizable */}
-              <InputField
-                label="Fecha y Hora"
-                type="datetime-local"
-                value={dateTime}
-                min={new Date().toISOString().slice(0, 16)}
-                onChange={(e) => setDateTime(e.target.value)}
-              />
 
               <InputField
                 label="Tu Nombre"

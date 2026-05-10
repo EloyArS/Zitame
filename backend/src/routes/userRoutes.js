@@ -5,6 +5,7 @@ const {
   login,
   verifyCookie,
   killcookie,
+  getUsername,
 } = require("../controllers/userController");
 const authMiddleware = require("../middlewares/authMiddleware");
 
@@ -12,5 +13,6 @@ router.post("/register", register);
 router.post("/login", login);
 router.get("/verify", authMiddleware, verifyCookie);
 router.post("/logout", authMiddleware, killcookie);
+router.get("/username", authMiddleware, getUsername);
 
 module.exports = router;

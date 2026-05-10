@@ -7,43 +7,36 @@ export default function ShareBooking() {
   const [cargando, setCargando] = useState(true);
 
   useEffect(() => {
-    const token = localStorage.getItem("token");
-
-    const getUserIdFromToken = (jwt) => {
+    const getid = async () => {
       try {
-        if (!jwt) return null;
-        const base64Url = jwt.split(".")[1];
-        if (!base64Url) return null;
+        const response = await fetch("/api/users/verify", {
+          method: "GET",
+          credentials: "include",
+          headers: { "Content-Type": "application/json" },
+        });
+        if (!response.ok) {
+          setCargando(false);
+          return;
+        }
+        const data = await response.json();
+        const idEncontrado = data.userId;
+        setUserId(idEncontrado);
 
-        const base64 = base64Url.replace(/-/g, "+").replace(/_/g, "/");
-        const jsonPayload = decodeURIComponent(
-          window
-            .atob(base64)
-            .split("")
-            .map(function (c) {
-              return "%" + ("00" + c.charCodeAt(0).toString(16)).slice(-2);
-            })
-            .join(""),
-        );
-
-        const decoded = JSON.parse(jsonPayload);
-        return decoded.id || decoded.userId;
+        setCargando(false);
       } catch (error) {
-        console.error("Error al leer el token:", error);
-        return null;
+        console.error("Error al verificar el usuario:", error);
+        setCargando(false);
       }
     };
-
-    // 2. Ejecutamos la extracción y guardamos en el estado
-    const idEncontrado = getUserIdFromToken(token);
-    setUserId(idEncontrado);
-    setCargando(false);
+    getid();
   }, []);
 
   if (cargando)
     return <div className="p-10 text-center text-gray-500">Cargando...</div>;
 
-  const bookingUrl = `${window.location.origin}/booking/${userId}`;
+  const bookingUrl = userId
+    ? `${window.location.origin}/booking/${userId}`
+    : "";
 
   return (
     <div className="flex flex-col items-center justify-center w-full min-h-screen p-10 bg-gray-100 rounded-xl shadow-lg border">

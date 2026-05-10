@@ -1,4 +1,8 @@
-const { createUser, getUserByEmail } = require("../models/userQueries");
+const {
+  createUser,
+  getUserByEmail,
+  getUserByName,
+} = require("../models/userQueries");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 
@@ -36,7 +40,20 @@ const logicUserLoginHandler = async (email, password) => {
   }
 };
 
+const logicGetUsernameHandler = async (userId) => {
+  try {
+    const user = await getUserByName(userId);
+    if (!user) {
+      throw new Error("Usuario no encontrado");
+    }
+    return user;
+  } catch (error) {
+    throw error;
+  }
+};
+
 module.exports = {
   logicUserCreateHandler,
   logicUserLoginHandler,
+  logicGetUsernameHandler,
 };

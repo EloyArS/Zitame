@@ -24,6 +24,7 @@ function AppointmentsComponent() {
       }
     };
     fetchAppointments();
+    setInterval(fetchAppointments, 10000);
   }, []);
 
   const handleStatus = async (id, status) => {
@@ -31,9 +32,7 @@ function AppointmentsComponent() {
       const response = await fetch(`/api/appointments/${id}/status`, {
         method: "PUT",
         credentials: "include",
-        headers: {
-          "Content-Type": "application/json",
-        },
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ status }),
       });
       const data = await response.json();
@@ -107,7 +106,9 @@ function AppointmentsComponent() {
 
                   {/* Añadimos la funcionalidad de whatsap en el apartado del teléfono */}
                   <div className="flex items-center gap-3">
-                    <p className="text-gray-600">{appointment.phone}</p>
+                    <p className="text-gray-600 dark:text-gray-400">
+                      {appointment.phone}
+                    </p>
                     <a
                       href={`https://wa.me/${appointment.phone.replace(/\s+/g, "")}`}
                       target="_blank"
@@ -124,8 +125,10 @@ function AppointmentsComponent() {
                       </svg>
                     </a>
                   </div>
-                  <p className="text-gray-600">{appointment.service_name}</p>
-                  <p className="text-gray-600">
+                  <p className="text-gray-600 dark:text-gray-400">
+                    {appointment.service_name}
+                  </p>
+                  <p className="text-gray-600 dark:text-gray-400">
                     {new Date(appointment.date_time).toLocaleString()}
                   </p>
                 </div>
@@ -142,7 +145,7 @@ function AppointmentsComponent() {
                     {appointment.status}
                   </span>
                   {appointment.status === "Pendiente" && (
-                    <div className="flex gap-2">
+                    <div className="flex flex-wrap gap-2">
                       <button
                         onClick={() => handleStatus(appointment.id, "Aprobado")}
                         className="button-aceptar"
