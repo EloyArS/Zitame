@@ -12,8 +12,8 @@ function Dashboard() {
       </div>*/}
 
       {/* CITAS */}
-      <div className="bg-gray-50 rounded-xl p-6 border border-gray-200">
-        <h2 className="text-xl font-bold mb-6 text-gray-700">
+      <div className="bg-gray-50 rounded-xl p-6 border border-gray-200 dark:bg-gray-800 dark:border-gray-700 dark:text-white mt-6">
+        <h2 className="text-xl font-bold mb-6 text-gray-700 dark:text-white">
           Listado Detallado
         </h2>
         <AppointmentsComponent />

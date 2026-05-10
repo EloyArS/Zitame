@@ -17,17 +17,17 @@ function Services() {
   useEffect(() => {
     const fetchServices = async () => {
       try {
-        const token = localStorage.getItem("token");
-        if (!token) {
-          navigate("/login");
-          return;
-        }
         const response = await fetch("/api/services", {
-          headers: { Authorization: `Bearer ${token}` },
+          method: "GET",
+          credentials: "include",
+          headers: { "Content-Type": "application/json" },
         });
         const data = await response.json();
+        if (!response.ok) {
+          navigate("/dashboard");
+          return;
+        }
         console.log("Servicios obtenidos:", data);
-        if (!response.ok) throw new Error(data.error);
         setServices(data);
       } catch (err) {
         setError(err.message || "Error al conectar con el servidor");
@@ -38,6 +38,7 @@ function Services() {
 
   //Crear servicio
 
+  //Falta modificar la consulta de token a cookie
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError("");
@@ -69,7 +70,7 @@ function Services() {
   };
 
   //Borrar servicio
-
+  //Falta modificar la consulta de token a cookie
   const handleDelete = async (id) => {
     if (!window.confirm("¿Estás seguro de eliminar este servicio?")) return;
     try {
@@ -86,9 +87,11 @@ function Services() {
 
   return (
     <>
-      <div className="max-w-4xl mx-auto">
-        <div className="flex justify-between items-center mb-8">
-          <h1 className="text-3xl font-bold text-gray-800">Mis Servicios</h1>
+      <div className="max-w-4xl mx-auto dark:text-white dark:bg-gray-800 p-6 rounded-lg">
+        <div className="flex justify-between items-center mb-8 dark:text-white">
+          <h1 className="text-3xl font-bold text-gray-800 dark:text-white">
+            Mis Servicios
+          </h1>
         </div>
 
         {error && (
@@ -102,8 +105,8 @@ function Services() {
           </div>
         )}
 
-        <div className="bg-white p-6 rounded-xl shadow-lg mb-10 border border-gray-100">
-          <h2 className="text-xl font-semibold mb-6 text-gray-700">
+        <div className="bg-white p-6 rounded-xl shadow-lg mb-10 border border-gray-100 dark:bg-gray-700 dark:border-gray-600">
+          <h2 className="text-xl font-semibold mb-6 text-gray-700 dark:text-white">
             Añadir Nuevo Servicio
           </h2>
           <form
@@ -137,52 +140,49 @@ function Services() {
             />
 
             <div className="md:col-span-2 mb-4">
-              <label className="block text-gray-700 text-sm font-bold mb-2">
+              <label className="block text-gray-700 text-sm font-bold mb-2 dark:text-white">
                 Descripción (opcional)
               </label>
               <textarea
                 value={description}
                 onChange={(e) => setDescription(e.target.value)}
-                className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 outline-none transition-all"
+                className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 outline-none transition-all dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white"
                 rows="2"
                 placeholder="Breve descripción del servicio..."
               />
             </div>
 
             <div className="md:col-span-2">
-              <button
-                type="submit"
-                className="w-full bg-blue-600 text-white py-3 rounded-lg font-bold hover:bg-blue-700 transition-shadow shadow-md"
-              >
+              <button type="submit" className="button-service">
                 + Crear Servicio
               </button>
             </div>
           </form>
         </div>
 
-        <h2 className="text-xl font-semibold mb-4 text-gray-700">
+        <h2 className="text-xl font-semibold mb-4 text-gray-700 dark:text-white">
           Servicios Activos
         </h2>
         <div className="grid gap-4">
           {services.length === 0 ? (
-            <p className="text-gray-500 italic">
+            <p className="text-gray-500 italic dark:text-gray-400">
               No tienes servicios creados todavía.
             </p>
           ) : (
             services.map((service) => (
               <div
                 key={service.id}
-                className="bg-white p-5 rounded-xl shadow-sm border border-gray-200 flex justify-between items-center hover:shadow-md transition-shadow"
+                className="bg-white p-5 rounded-xl shadow-sm border border-gray-200 flex justify-between items-center hover:shadow-md transition-shadow dark:bg-gray-600 dark:border-gray-700 dark:text-white"
               >
                 <div>
-                  <h3 className="font-bold text-lg text-gray-800">
+                  <h3 className="font-bold text-lg text-gray-800 dark:text-white">
                     {service.name}
                   </h3>
-                  <p className="text-blue-600 font-medium">
+                  <p className="text-blue-600 font-medium dark:text-blue-400">
                     {service.duration} min — {service.price}€
                   </p>
                   {service.description && (
-                    <p className="text-gray-500 text-sm mt-1">
+                    <p className="text-gray-500 text-sm mt-1 dark:text-gray-400">
                       {service.description}
                     </p>
                   )}

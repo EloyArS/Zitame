@@ -29,15 +29,13 @@ const AuthLayout = () => {
         </div>
       </div>
 
-      {/* Lado Derecho: Formulario (Login / Register) */}
+      {/* Formulario (Login / Register) */}
       <div className="flex-1 flex items-center justify-center p-8">
         <div className="w-full max-w-md">
-          {/* Aquí cae Login.jsx o Register.jsx */}
           <Outlet />
 
           <footer className="mt-8 text-center text-sm text-gray-400">
-            &copy; {new Date().getFullYear()} Zitame App. Todos los derechos
-            reservados.
+            Zitame App
           </footer>
         </div>
       </div>
