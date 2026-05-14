@@ -61,13 +61,21 @@ function Booking() {
   const showdays = (diasMostrados) => {
     //array con los días disponibles
     const avaliabledays = [];
-    //a partir del dia actual, guardamos en el array los días disponibles sin que sea sábdao o domingo
     const hoy = new Date();
+    //if para comprobar que si entramos despues de las 17:00, el día actual se le suma 1
+    if (hoy.getHours() > 17 || hoy.getHours() === 17) {
+      hoy.setDate(hoy.getDate() + 1);
+    }
+    //while para recorrer los días hasta los 14 indicados.
     while (avaliabledays.length < diasMostrados) {
       const diaSemana = hoy.getDay();
       if (diaSemana !== 0 && diaSemana !== 6) {
-        //nos quedamos con el valor del día que nos devuelve el getDay
-        const value = hoy.toISOString().slice(0, 10);
+        //ya no trabajamos con toISO, sino con los objetos Date de JS, por lo que obtenemos el año, mes y día con los métodos correspondientes.
+        const año = hoy.getFullYear();
+        const mes = (hoy.getMonth() + 1).toString().padStart(2, "0");
+        const dia = hoy.getDate().toString().padStart(2, "0");
+
+        const value = `${año}-${mes}-${dia}`;
         //convertimos el día a un formato legible para el usuario
         const label = hoy.toLocaleDateString("es-ES", {
           weekday: "long",

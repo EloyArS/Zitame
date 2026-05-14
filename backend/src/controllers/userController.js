@@ -27,7 +27,6 @@ const login = async (req, res) => {
       secure: process.env.NODE_ENV === "development" ? false : true,
       sameSite: "strict",
     });
-    console.log("Token generado:", token);
     res.json({ mensaje: "Login correcto", user });
   } catch (error) {
     if (
