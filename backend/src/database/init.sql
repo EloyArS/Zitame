@@ -29,7 +29,7 @@ CREATE TABLE IF NOT EXISTS customers (
 
 CREATE TABLE IF NOT EXISTS appointments (
     id SERIAL PRIMARY KEY,
-    date_time TIMESTAMP NOT NULL,
+    date_time TIMESTAMP WITH TIME ZONE NOT NULL,
     status VARCHAR(20) NOT NULL DEFAULT 'Pendiente',
     user_id INTEGER NOT NULL REFERENCES users(id),
     customer_id INTEGER NOT NULL REFERENCES customers(id),

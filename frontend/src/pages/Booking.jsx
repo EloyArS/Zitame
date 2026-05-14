@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import InputField from "../components/InputField";
+import { DateTime } from "luxon";
 
 function Booking() {
   const { userId } = useParams();
@@ -11,7 +12,6 @@ function Booking() {
   const [name, setName] = useState("");
   const [phone, setPhone] = useState("");
   const [email, setEmail] = useState("");
-  const [date_time] = useState("");
   const [error, setError] = useState("");
   const [success, setSuccess] = useState(false);
   const [loading, setLoading] = useState(true);
@@ -44,10 +44,14 @@ function Booking() {
         const response = await fetch(`/api/appointments/`);
         const data = await response.json();
         //guardamos solo las fechas
-        const occupied = data.map((cita) =>
+        const occupied = data.map((cita) => {
+          const fechaespaña = DateTime.fromISO(cita.fecha_local, {
+            zone: "utc",
+          }).setZone("Europe/Madrid");
+
           //de la bd traemos la fecha con un T entre la fecha y la hora, debemos quitarla para hacer correctamente la comparacion.
-          cita.date_time.replace("T", " ").slice(0, 19),
-        );
+          return fechaespaña.toFormat("yyyy-MM-dd HH:mm:ss");
+        });
         setOccupiedAppointments(occupied);
       } catch (error) {
         console.error("Error al cargar las citas ocupadas:", error);
@@ -61,30 +65,20 @@ function Booking() {
   const showdays = (diasMostrados) => {
     //array con los días disponibles
     const avaliabledays = [];
-    const hoy = new Date();
-    //if para comprobar que si entramos despues de las 17:00, el día actual se le suma 1
-    if (hoy.getHours() > 17 || hoy.getHours() === 17) {
-      hoy.setDate(hoy.getDate() + 1);
+    let hoy = DateTime.now().setZone("Europe/Madrid");
+    //if para comprobar que si entramos a las 17:00 o despues de las 17:00, el día actual se le suma 1
+    if (hoy.hour > 17 || hoy.hour === 17) {
+      hoy = hoy.plus({ days: 1 });
     }
     //while para recorrer los días hasta los 14 indicados.
     while (avaliabledays.length < diasMostrados) {
-      const diaSemana = hoy.getDay();
-      if (diaSemana !== 0 && diaSemana !== 6) {
-        //ya no trabajamos con toISO, sino con los objetos Date de JS, por lo que obtenemos el año, mes y día con los métodos correspondientes.
-        const año = hoy.getFullYear();
-        const mes = (hoy.getMonth() + 1).toString().padStart(2, "0");
-        const dia = hoy.getDate().toString().padStart(2, "0");
-
-        const value = `${año}-${mes}-${dia}`;
-        //convertimos el día a un formato legible para el usuario
-        const label = hoy.toLocaleDateString("es-ES", {
-          weekday: "long",
-          day: "numeric",
-          month: "long",
-        });
+      const diaSemana = hoy.weekday;
+      if (diaSemana !== 6 && diaSemana !== 7) {
+        const value = hoy.toFormat("yyyy-MM-dd");
+        const label = hoy.toFormat("cccc, d MMMM", { locale: "es" });
         avaliabledays.push({ value, label });
       }
-      hoy.setDate(hoy.getDate() + 1);
+      hoy = hoy.plus({ days: 1 });
     }
     return avaliabledays;
   };
@@ -106,14 +100,16 @@ function Booking() {
     const hours = [];
     const [startHour] = start.split(":").map(Number);
     const [endHour] = end.split(":").map(Number);
-    let tiempoactual = new Date();
-    tiempoactual.setHours(startHour, 0, 0);
-    let tiempofinal = new Date();
-    tiempofinal.setHours(endHour, 0, 0);
+    let tiempoactual = DateTime.fromISO(selectedDate, {
+      zone: "Europe/Madrid",
+    }).set({ hour: startHour, minute: 0, second: 0 });
+    let tiempofinal = DateTime.fromISO(selectedDate, {
+      zone: "Europe/Madrid",
+    }).set({ hour: endHour, minute: 0, second: 0 });
     //con un while recorremos el tiempo actual hasta el tiempo final saltando la franja de 13:00 a 16:00
     while (tiempoactual <= tiempofinal) {
-      const hora = tiempoactual.getHours();
-      const minuto = tiempoactual.getMinutes();
+      const hora = tiempoactual.hour;
+      const minuto = tiempoactual.minute;
       //cambiamos el formato de la hora
       const horaTexto = `${hora.toString().padStart(2, "0")}:${minuto.toString().padStart(2, "0")}`;
       const referenciaCita = `${selectedDate} ${horaTexto}:00`;
@@ -124,7 +120,7 @@ function Booking() {
       if ((hora < 13 || hora >= 16) && !citaOcupada) {
         hours.push(horaTexto);
       }
-      tiempoactual.setMinutes(tiempoactual.getMinutes() + step);
+      tiempoactual = tiempoactual.plus({ minutes: step });
     }
     return hours;
   };
@@ -137,6 +133,16 @@ function Booking() {
     e.preventDefault();
     setError("");
     try {
+      //creamos la fecha como hora de España.
+      const fechaEspaña = DateTime.fromISO(
+        `${selectedDate}T${selectedHour}:00`,
+        {
+          zone: "Europe/Madrid",
+        },
+      );
+      //convertimos la fecha a UTC para guardarla en la base de datos, ya que el backend espera la fecha en UTC.
+      const utcfecha = fechaEspaña.toUTC();
+      const dateTimeUTC = utcfecha.toFormat("yyyy-MM-dd HH:mm:ss");
       const response = await fetch("/api/appointments", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -144,12 +150,12 @@ function Booking() {
           name,
           phone,
           email,
-          date_time: `${selectedDate} ${selectedHour}:00`,
+          date_time: dateTimeUTC,
           serviceId: selectedService,
           userId,
         }),
       });
-      console.log(date_time);
+      console.log(dateTimeUTC);
       const data = await response.json();
       if (!response.ok)
         throw new Error(data.error || "Error al solicitar la cita");
